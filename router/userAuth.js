@@ -3,6 +3,7 @@ const users = require("../models/user")
 const bcrypt = require("bcrypt")
 var jwt = require('jsonwebtoken');
 const validator = require("validator")
+const {authentication} = require("../middleware/auth")
 const userAuth = express.Router()
 userAuth.post("/signup",async(req,res)=>{
  try{
@@ -18,7 +19,8 @@ userAuth.post("/signup",async(req,res)=>{
     res.send("done")
  }
  catch(err){
-    res.status(400).send("something went wrong")
+    console.log("SIGNUP ERROR 👉", err)
+  res.status(400).send(err.message)
  }
    
 })
@@ -48,4 +50,8 @@ userAuth.post("/logout",async(req,res)=>{
     res.cookie("token",null,{expires:new Date(Date.now())})
     res.send("userlogged out")
 })
+
+
+
+
 module.exports = userAuth
