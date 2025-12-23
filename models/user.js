@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-var validator = require('validator');
+const validator = require('validator');
 const user = new mongoose.Schema({
     firstName:{
         type:String,
@@ -11,7 +11,7 @@ const user = new mongoose.Schema({
         required:true,
         maxlength:15
     },
-    emailID:{
+    emailId:{
         type:String,
         required:true,
         unique:true,
@@ -21,14 +21,18 @@ const user = new mongoose.Schema({
             throw Error("enter valid email id ")
         }
     }
+
     },
-    Occupation:{
+    occupation:{
         type:String,
-       enum:["Student","Teacher","Admin"]     //weather student or teacher or admin
+       enum:["Student","Teacher","Admin"]  ,
+       default:"Student" ,
+       required:true                     //weather student or teacher or admin
     },
     password:{
         type:String,
-        required:true
+        required:true,
+        
     },
     EnrolledCourses:{
         type:[String]     //for student to store which courses they are enrolled in
