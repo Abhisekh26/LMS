@@ -3,51 +3,51 @@ const users = require("../models/user")
 const bcrypt = require("bcrypt")
 var jwt = require('jsonwebtoken');
 const validator = require("validator")
-const {authentication} = require("../middleware/auth")
+const { authentication } = require("../middleware/auth")
 const userAuth = express.Router()
-userAuth.post("/signup",async(req,res)=>{
- try{
-   const{firstName,lastName,emailId,password}= req.body
-   const checkEmail = validator.isEmail(emailId)
-   if(!checkEmail){
-    res.send("Enter a valid email")
-   }
-    const passwordhash =await bcrypt.hash(password,10)
-    console.log(passwordhash)
-    const user = new users({firstName,lastName,emailId,password:passwordhash})
-    await user.save()
-    res.send("done")
- }
- catch(err){
-    console.log("SIGNUP ERROR 👉", err)
-  res.status(400).send(err.message)
- }
-   
+userAuth.post("/signup", async (req, res) => {
+    try {
+        const { firstName, lastName, emailId, password,occupation } = req.body
+        const checkEmail = validator.isEmail(emailId)
+        if (!checkEmail) {
+            res.send("Enter a valid email")
+        }
+        const passwordhash = await bcrypt.hash(password, 10)
+
+        const user = new users({ firstName, lastName, emailId,occupation, password: passwordhash })
+        await user.save()
+        res.send("done")
+    }
+    catch (err) {
+        console.log("SIGNUP ERROR 👉", err)
+        res.status(400).send(err.message)
+    }
+
 })
 
 
-userAuth.post("/login",async(req,res)=>{
-const {emailId,password}= req.body
-    const isEmailValid =validator.isEmail(emailId)
-    if(!isEmailValid){
+userAuth.post("/login", async (req, res) => {
+    const { emailId, password } = req.body
+    const isEmailValid = validator.isEmail(emailId)
+    if (!isEmailValid) {
         res.send("Enter valid credentials")
     }
- const data = await users.findOne({emailId:emailId})
- if(!data ){
-    res.send("Enter valid credentials")
- }
-const checkPassword = await bcrypt.compare(password,data.password)
-if(!checkPassword){
-res.send("password is wrong")
-}
-const token = await jwt.sign({_id:data._id},'ABHIJIM@123')
- res.cookie("token",token)
- res.send(data)
+    const data = await users.findOne({ emailId: emailId })
+    if (!data) {
+        res.send("Enter valid credentials")
+    }
+    const checkPassword = await bcrypt.compare(password, data.password)
+    if (!checkPassword) {
+        res.send("password is wrong")
+    }
+    const token = await jwt.sign({ _id: data._id }, 'ABHIJIM@123')
+    res.cookie("token", token)
+    res.send(data)
 
 })
 
-userAuth.post("/logout",async(req,res)=>{
-    res.cookie("token",null,{expires:new Date(Date.now())})
+userAuth.post("/logout", async (req, res) => {
+    res.cookie("token", null, { expires: new Date(Date.now()) })
     res.send("userlogged out")
 })
 

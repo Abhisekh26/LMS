@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const user = require("./user")
-const courses =new mongoose.Schema({
+const course =new mongoose.Schema({
    name:{
     type:String,
     required:true
@@ -38,7 +38,7 @@ thumbnail:{
 
 
 
-
+module.exports= mongoose.model("courses",course)
 
 
 
