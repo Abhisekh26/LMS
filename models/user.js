@@ -32,8 +32,7 @@ const user = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-        
-    },
+         },
     EnrolledCourses:{
         type:[String]     //for student to store which courses they are enrolled in
     },

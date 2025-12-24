@@ -1,1 +1,68 @@
 node_modules
+
+
+
+
+
+
+
+
+
+# 2️⃣ Lesson APIs (Teacher side)
+
+# These let teachers add lessons to a course:
+
+# POST /lessons → Add lesson
+
+# video/pdf/live
+
+# For live, include start/end + meeting link
+
+# PUT /lessons/:id → Update lesson
+
+# Add recordings for live lessons
+
+# Change video/pdf files if needed
+
+# DELETE /lessons/:id → Remove lesson
+
+
+
+
+# 3️⃣ Student side APIs
+
+# GET /courses → List all available courses
+
+# GET /courses/:id/lessons → List all lessons in a course (respect isPreview and enrollment)
+
+# POST /enroll/:courseId → Enroll in a course
+
+# GET /progress/:courseId → Get progress for the student (later)
+
+
+
+# 4️⃣ Enrollment & Progress Tracking
+
+# Create a separate Enrollment schema:
+
+# userId, courseId, lessonsCompleted[]
+
+# Update progress when student completes a lesson
+
+# This lets you show “Course 50% complete” etc.
+
+
+
+
+
+
+
+# 6️⃣ Next logical step
+
+# Build Course APIs first (create, list, get, update, delete)
+
+# Then Lesson APIs (add lessons, upload video/pdf, schedule live)
+
+# Then Enrollment APIs for students
+
+# Once this is done, your backend will be fully functional, and you can move to frontend integration.
