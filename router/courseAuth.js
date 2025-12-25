@@ -38,7 +38,9 @@ courseAuth.get("/course/:id", authentication, rolecheck, async (req, res) => {
     }
 
 })
-// PUT /courses/:id → Update course Only owner (Teacher)
+
+
+// PUT /courses/:id → Update course Only owner (Teacher)  // abug is here ,teacher user schema offered courses should update 
 
 courseAuth.patch("/course/:id",authentication,rolecheck,async(req,res)=>{
     try{

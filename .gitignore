@@ -30,13 +30,6 @@ node_modules
 
 
 # 3️⃣ Student side APIs
-
-# GET /courses → List all available courses
-
-# GET /courses/:id/lessons → List all lessons in a course (respect isPreview and enrollment)
-
-# POST /enroll/:courseId → Enroll in a course
-
 # GET /progress/:courseId → Get progress for the student (later)
 
 
