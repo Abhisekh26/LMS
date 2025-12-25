@@ -52,9 +52,9 @@ lessonAuth.post("/course/:idcourse/lesson", authentication, rolecheck, async (re
 })
 
 
-// # PUT /lessons/:id → Update lesson,  Add recordings for live lessons,Change video/pdf files if needed
+// # PATCH /lessons/:id → Update lesson,pdf files if needed
 
-lessonAuth.patch("/lessons/:id", authentication, rolecheck, async (req, res) => {
+lessonAuth.patch("/lessons/:id/pdf", authentication, rolecheck, async (req, res) => {
     try {
         const lessonid = req.params.id
         const { fileUrl, allowDownload, pageCount } = req.body
@@ -81,8 +81,61 @@ lessonAuth.patch("/lessons/:id", authentication, rolecheck, async (req, res) => 
     }
 })
 
+// # PATCH /lessons/:id → Update lesson,video files if needed
+
+lessonAuth.patch("/lessons/:id/video", authentication,rolecheck, async (req, res) => {
+  try {
+    if (req.user.occupation !== "Teacher") {
+      return res.status(403).send("Invalid occupation")
+    }
+
+    const lessonId = req.params.id
+    const { duration, sources } = req.body
+
+    const lesson = await lessons.findById(lessonId)
+    if (!lesson) {
+      return res.status(404).send("Lesson not found")
+    }
+
+    if (lesson.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).send("Unauthorized access")
+    }
+
+    if (lesson.lessonType !== "video") {
+      return res.status(400).send("This lesson is not a video lesson")
+    }
+
+    lesson.video = {
+      duration,
+      sources
+    }
+
+    await lesson.save()
+    res.send("Video uploaded successfully")
+
+  } catch (err) {
+    res.status(400).send(err.message)
+  }
+})
+
+// # PATCH /lessons/:id → Update lesson,video files if needed
 
 // # DELETE /lessons/:id → Remove lesson
-
+lessonAuth.delete("/lessons/:id", authentication, rolecheck, async (req, res) => {
+    try {
+        if (req.user.occupation !== "Teacher") {
+            return res.send("Invalid occupation")
+        }
+        const userid = req.user._id
+        const lessonid = req.params.id
+        const deletedLesson = await lessons.findOneAndDelete({ _id: lessonid, createdBy: userid })
+        if (!deletedLesson) {
+            return res.send("Lesson not found or unauthorized")
+        }
+        res.send("deleted")
+    } catch (err) {
+        res.status(400).send(err.message)
+    }
+})
 
 module.exports = lessonAuth
