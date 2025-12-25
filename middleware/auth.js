@@ -4,7 +4,7 @@ const users = require("../models/user")
 async function authentication(req, res, next) {
     try {
         const token = req.cookies.token
-        console.log(token)
+     
         const verifyToken = await jwt.verify(token, 'ABHIJIM@123')
         if (!verifyToken) {
             res.send("Log in again")

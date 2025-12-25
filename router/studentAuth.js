@@ -1,6 +1,8 @@
 const express = require("express")
 const studentAuth = express.Router()
 const users = require("../models/user")
+const courses = require("../models/courses")
+const lessons = require("../models/lesson")
 const { authentication } = require("../middleware/auth")
 
 
@@ -17,7 +19,27 @@ studentAuth.get("/course", authentication, async (req, res) => {
 
 
 // GET /courses/:id/lessons → List all lessons in a course (respect isPreview and enrollment)
+studentAuth.get("/course/:id/lessons",authentication,async(req,res)=>{
+ try{
+    const courseid = req.params.id 
+    const enrolledCourses = req.user.EnrolledCourses.includes(courseid)
+    let classData
+    if(enrolledCourses){
+    classData = await lessons.find({courseId:courseid}).sort({order:1})
+    res.send(classData)
+    }
+    else {
+        classData = await lessons.find({courseId:courseid ,isPreview: true}).sort({order:1})
+        res.send(classData)
+        }
 
+        if(enrolledCourses.length === 0){
+            return res.send("no classes available")
+        }
+    }catch(err){
+        res.status(400).send("something went wrong")
+    }
+})
 
 
 
