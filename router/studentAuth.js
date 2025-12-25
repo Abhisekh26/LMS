@@ -21,21 +21,21 @@ studentAuth.get("/course", authentication, async (req, res) => {
 // GET /courses/:id/lessons → List all lessons in a course (respect isPreview and enrollment)
 studentAuth.get("/course/:id/lessons",authentication,async(req,res)=>{
  try{
-    const courseid = req.params.id 
-    const enrolledCourses = req.user.EnrolledCourses.includes(courseid)
+    const courseid = req.params.id
+    const enrolledCourses = req.user.EnrolledCourses.toString().includes(courseid.toString())
     let classData
     if(enrolledCourses){
     classData = await lessons.find({courseId:courseid}).sort({order:1})
-    res.send(classData)
+             return res.send(classData)
     }
     else {
         classData = await lessons.find({courseId:courseid ,isPreview: true}).sort({order:1})
-        res.send(classData)
+           return   res.send(classData)
         }
 
-        if(enrolledCourses.length === 0){
-            return res.send("no classes available")
-        }
+       if(!enrolledCourses){
+        return res.send("oops")
+       }
     }catch(err){
         res.status(400).send("something went wrong")
     }
