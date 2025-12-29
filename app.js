@@ -8,6 +8,7 @@ const userAuth = require("./router/userAuth")
 const courseAuth = require("./router/courseAuth")
 const studentAuth = require("./router/studentAuth")
 const lessonAuth = require("./router/lessonAuth")
+const progressAuth = require("./router/progressAuth")
 app.use(express.json())
 app.use(cookieParser())
 
@@ -16,6 +17,7 @@ app.use("/",userAuth)
 app.use("/",courseAuth)
 app.use("/",studentAuth)
 app.use("/",lessonAuth)
+app.use("/",progressAuth)
 
 
 connectdb().then(() => {

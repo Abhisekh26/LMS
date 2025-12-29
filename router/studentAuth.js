@@ -41,9 +41,10 @@ studentAuth.get("/course/:id/lessons",authentication,async(req,res)=>{
     }
 })
 
+//get//particular enrolled course of a student
 
 
-
+  
 // POST /enroll/:courseId → Enroll in a course
 studentAuth.post("/enroll/:courseId", authentication, async (req, res) => {
     try {
