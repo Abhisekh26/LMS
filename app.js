@@ -9,6 +9,12 @@ const courseAuth = require("./router/courseAuth")
 const studentAuth = require("./router/studentAuth")
 const lessonAuth = require("./router/lessonAuth")
 const progressAuth = require("./router/progressAuth")
+const cors = require("cors")
+// app.use(cors({
+//     origins:"http://localhost:5173",
+//     credentials:true
+// }))
+app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 

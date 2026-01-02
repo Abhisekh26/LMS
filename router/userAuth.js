@@ -42,7 +42,11 @@ userAuth.post("/login", async (req, res) => {
     }
     const token = await jwt.sign({ _id: data._id }, 'ABHIJIM@123')
     res.cookie("token", token)
-    res.send(data)
+      res.status(200).json({
+       user: data,   
+     token: token, 
+});
+
 
 })
 
