@@ -5,6 +5,12 @@ const { rolecheck } = require("../middleware/roleauth")
 const courses = require("../models/courses")
 const lessons = require("../models/lesson")
 
+//  get class detail
+
+lessonAuth.get("/lesson/:lessonId", authentication, async (req, res) => {
+  const lesson = await lessons.findById(req.params.lessonId);
+  res.send(lesson);
+});
 
 
 // # These let teachers add lessons to a course:, POST /lessons → Add lesson, video/pdf/live, For live, include start/end + meeting link

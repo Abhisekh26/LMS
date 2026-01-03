@@ -3,6 +3,7 @@ const courseAuth = express.Router()
 const { authentication } = require("../middleware/auth")
 const { rolecheck } = require("../middleware/roleauth")
 const courses = require("../models/courses")
+const lessons = require('../models/lesson')
 
 
 
@@ -26,18 +27,26 @@ courseAuth.post("/course", authentication, rolecheck, async (req, res) => {
 
 })
 
+
+
+
 // GET /courses/:id → Get course details
-courseAuth.get("/course/:id", authentication, rolecheck, async (req, res) => {
+courseAuth.get("/course/:id", authentication, async (req, res) => {
     try {
         const courseId = req.params.id
-        const courseData = await courses.findById(courseId)
-        res.send(courseData)
+        // console.log(courseId)
+        const courseData = await courses.findById(courseId).populate("createdBy","firstName lastName")
+        const lessonData = await lessons.find({courseId:courseId})
+        res.send({courseData,lessonData})
     }
     catch (err) {
-        res.status(400).send("Something went wrong")
+        res.status(400).send(err)
     }
 
 })
+
+
+
 
 
 // PUT /courses/:id → Update course Only owner (Teacher)  // abug is here ,teacher user schema offered courses should update 

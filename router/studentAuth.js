@@ -9,11 +9,11 @@ const { authentication } = require("../middleware/auth")
 // GET /courses → List all available courses
 studentAuth.get("/course", authentication, async (req, res) => {
     try {
-        const allcourses = await courses.find()
-        res.send(allcourses)
+        const allcourses = await courses.find().populate("createdBy", "firstName lastName")
+        return res.send(allcourses)
     }
     catch (err) {
-        res.status(400).send("Something went wrong")
+      return   res.status(400).send("Something went wrong")
     }
 })
 
@@ -53,8 +53,9 @@ studentAuth.post("/enroll/:courseId", authentication, async (req, res) => {
         if (req.user.occupation !== "Student") {
             return res.send("invalid credentials")
         }
-        await users.findByIdAndUpdate(studentId, { $addToSet: { EnrolledCourses: courseId } })
-        res.send("updated")
+     const updateduser=await users.findByIdAndUpdate(studentId, { $addToSet: { EnrolledCourses:courseId } },
+              { new: true } )
+        res.status(200).json(updateduser)
     }
     catch (err) {
             res.status(400).send("Something went wrong")

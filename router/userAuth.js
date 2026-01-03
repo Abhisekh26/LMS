@@ -30,19 +30,19 @@ userAuth.post("/login", async (req, res) => {
     const { emailId, password } = req.body
     const isEmailValid = validator.isEmail(emailId)
     if (!isEmailValid) {
-        res.send("Enter valid credentials")
+      return   res.send("Enter valid credentials")
     }
     const data = await users.findOne({ emailId: emailId })
     if (!data) {
-        res.send("Enter valid credentials")
+       return res.send("Enter valid credentials")
     }
     const checkPassword = await bcrypt.compare(password, data.password)
     if (!checkPassword) {
-        res.send("password is wrong")
+       return res.send("password is wrong")
     }
     const token = await jwt.sign({ _id: data._id }, 'ABHIJIM@123')
     res.cookie("token", token)
-      res.status(200).json({
+    return  res.status(200).json({
        user: data,   
      token: token, 
 });
@@ -55,7 +55,13 @@ userAuth.post("/logout", async (req, res) => {
     res.send("userlogged out")
 })
 
-
+userAuth.get("/me",authentication,async(req,res)=>{
+    try {
+    res.status(200).json(req.user);
+  } catch (err) {
+    res.status(400).send("Unable to fetch user");
+  }
+});
 
 
 module.exports = userAuth
