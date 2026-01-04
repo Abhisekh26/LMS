@@ -30,7 +30,7 @@ courseAuth.post("/course", authentication, rolecheck, async (req, res) => {
 
 
 
-// GET /courses/:id → Get course details
+// GET /courses/:id → Get course details,all lessons in the course
 courseAuth.get("/course/:id", authentication, async (req, res) => {
     try {
         const courseId = req.params.id
@@ -46,6 +46,27 @@ courseAuth.get("/course/:id", authentication, async (req, res) => {
 })
 
 
+// get all courses created by a teacher 
+courseAuth.get("/my-courses", authentication, async (req, res) => {
+    console.log("happy")
+  try {
+    if (req.user.occupation !== "Teacher") {
+      return res.status(403).send("Access denied");
+    }
+
+    const teacherId = req.user._id;
+    console.log(teacherId)
+
+    const myCourses = await courses.find({ createdBy: teacherId })
+      .sort({ createdAt: -1 });
+      console.log(myCourses)
+
+    res.status(200).json(myCourses);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send("Something went wrong");
+  }
+});
 
 
 

@@ -33,12 +33,7 @@ const user = new mongoose.Schema({
         type:String,
         required:true,
          },
-    // EnrolledCourses:{
-    //     type:[String]     //for student to store which courses they are enrolled in
-    // },
-    // CoursesOffered:{
-    //     type:[String]       //for teacher to see which courses are tehy offering
-    // },
+   
 
 
     EnrolledCourses: [{

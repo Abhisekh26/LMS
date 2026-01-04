@@ -46,21 +46,64 @@ studentAuth.get("/course/:id/lessons",authentication,async(req,res)=>{
 
   
 // POST /enroll/:courseId → Enroll in a course
+
+
+// studentAuth.post("/enroll/:courseId", authentication, async (req, res) => {
+//     try {
+//         const courseId = req.params.courseId
+//         const studentId = req.user._id
+//         if (req.user.occupation !== "Student") {
+//             return res.send("invalid credentials")
+//         }
+//      const updateduser=await users.findByIdAndUpdate(studentId, { $addToSet: { EnrolledCourses:courseId } },
+//               { new: true } )
+//         res.status(200).json(updateduser)
+//     }
+//     catch (err) {
+//             res.status(400).send("Something went wrong")
+//         }
+//     })
+
 studentAuth.post("/enroll/:courseId", authentication, async (req, res) => {
-    try {
-        const courseId = req.params.courseId
-        const studentId = req.user._id
-        if (req.user.occupation !== "Student") {
-            return res.send("invalid credentials")
-        }
-     const updateduser=await users.findByIdAndUpdate(studentId, { $addToSet: { EnrolledCourses:courseId } },
-              { new: true } )
-        res.status(200).json(updateduser)
+  try {
+    const courseId = req.params.courseId;
+    const studentId = req.user._id;
+
+    if (req.user.occupation !== "Student") {
+      return res.status(403).send("Only students can enroll");
     }
-    catch (err) {
-            res.status(400).send("Something went wrong")
-        }
-    })
+
+    const course = await courses.findById(courseId);
+    if (!course) {
+      return res.status(404).send("Course not found");
+    }
+
+    // prevent double enrollment (check from user side)
+    const user = await users.findById(studentId);
+    if (user.EnrolledCourses.includes(courseId)) {
+      return res.status(400).send("Already enrolled");
+    }
+
+    // 1️⃣ FIRST: enroll student (source of truth)
+    const updatedUser = await users.findByIdAndUpdate(
+      studentId,
+      { $addToSet: { EnrolledCourses: courseId } },
+      { new: true }
+    );
+
+    // 2️⃣ THEN: update course stats
+    await courses.findByIdAndUpdate(courseId, {
+      $addToSet: { enrolledStudents: studentId },
+      $inc: { totalRevenue: course.price }
+    });
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send("Something went wrong");
+  }
+});
+
 
 // GET /progress/:courseId → Get progress for the student (later)
 

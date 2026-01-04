@@ -15,6 +15,25 @@ const course =new mongoose.Schema({
     ref:"users",
     required:true
  },
+
+
+
+// ✅ ADD THIS
+  enrolledStudents: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
+  }],
+
+  
+  totalRevenue: {
+    type: Number,
+    default: 0
+  },
+// 
+
+
+
+
  status:{
     type:String,
     enum:["finished","ongoing"],
